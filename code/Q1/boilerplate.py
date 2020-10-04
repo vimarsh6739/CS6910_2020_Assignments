@@ -9,9 +9,7 @@ import numpy as np
 
 # Apply necessary image transfromations here 
 
-transform = transforms.Compose([ #torchvision.transforms.RandomHorizontalFlip(p=0.5),
-                                #torchvision.transforms.RandomAffine(degrees=(-10, 10), translate=(0.1, 0.1), scale=(0.8, 1.2)),
-                                transforms.ToTensor(),
+transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5, 0.5, 0.5])])
 print(transform)
 
@@ -49,7 +47,7 @@ import torchvision.models as models
 # 3. Kernel size
 # etc etc.,
 
-num_epochs = 50         # desired number of training epochs.
+num_epochs = 10         # desired number of training epochs.
 learning_rate = 0.001   
 
 class Net(nn.Module):
@@ -62,7 +60,7 @@ class Net(nn.Module):
         self.conv3 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5)
         self.fc1 = nn.Linear(in_features=256, out_features=256)
         self.fc2 = nn.Linear(in_features=256, out_features=128)
-        self.fc3 = nn.Linear(in_features=128, out_features=20)      # change out_features according to number of classes
+        self.fc3 = nn.Linear(in_features=128, out_features=5)      # change out_features according to number of classes
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -105,8 +103,8 @@ def train(epoch, trainloader, optimizer, criterion):
     for i, data in enumerate(tqdm(trainloader), 0):
         # get the inputs
         inputs, labels = data
-        if torch.cuda.is_available():
-            inputs, labels = inputs.cuda(), labels.cuda()
+        #if torch.cuda.is_available():
+        #    inputs, labels = inputs.cuda(), labels.cuda()
 
         # zero the parameter gradients
         optimizer.zero_grad()
@@ -132,8 +130,8 @@ def test(testloader, model):
     with torch.no_grad():
         for data in tqdm(testloader):
             images, labels = data
-            if torch.cuda.is_available():
-                images, labels = images.cuda(), labels.cuda()        
+            #if torch.cuda.is_available():
+            #    images, labels = images.cuda(), labels.cuda()        
             outputs = net(images)
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
@@ -163,8 +161,8 @@ def classwise_test(testloader, model):
     with torch.no_grad():
         for data in tqdm(testloader):
             images, labels = data
-            if torch.cuda.is_available():
-                images, labels = images.cuda(), labels.cuda()        
+            #if torch.cuda.is_available():
+            #    images, labels = images.cuda(), labels.cuda()        
             outputs = net(images)
             _, predicted = torch.max(outputs, 1)
             c = (predicted == labels).squeeze()
@@ -194,6 +192,3 @@ test(testloader, net)
 classwise_test(testloader, net)
 
 print('Finished Training')
-
-
-
