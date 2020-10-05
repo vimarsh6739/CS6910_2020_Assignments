@@ -21,15 +21,15 @@ val_data_dir = '../dataset/val' # put path of validation dataset
 test_data_dir = '../dataset/test' # put path of test dataset
 
 trainset = torchvision.datasets.ImageFolder(root= train_data_dir, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=16,
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=32,
                                           shuffle=True, num_workers=2)
 
 valset = torchvision.datasets.ImageFolder(root= val_data_dir, transform=transform)
-valloader = torch.utils.data.DataLoader(valset, batch_size=16,
+valloader = torch.utils.data.DataLoader(valset, batch_size=32,
                                          shuffle=False, num_workers=2)
 
 testset = torchvision.datasets.ImageFolder(root= test_data_dir, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=16,
+testloader = torch.utils.data.DataLoader(testset, batch_size=32,
                                          shuffle=False, num_workers=2)
 
 #########################################################################
@@ -204,7 +204,7 @@ def trainModel(model_name, net, num_epochs, optimizer, criterion):
 os.makedirs('../models', exist_ok=True)
 os.makedirs('../images', exist_ok=True)
 
-num_epochs = 20                     # desired number of training epochs.
+num_epochs = 50                     # desired number of training epochs.
 learning_rate = 0.001               #desired learning rate
 criterion = nn.CrossEntropyLoss()   #loss function
 
