@@ -19,15 +19,15 @@ val_data_dir = '../dataset/val' # put path of validation dataset
 test_data_dir = '../dataset/test' # put path of test dataset
 
 trainset = torchvision.datasets.ImageFolder(root= train_data_dir, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=32,
                                           shuffle=True, num_workers=2)
 
 valset = torchvision.datasets.ImageFolder(root= val_data_dir, transform=transform)
-valloader = torch.utils.data.DataLoader(valset, batch_size=4,
+valloader = torch.utils.data.DataLoader(valset, batch_size=32,
                                          shuffle=False, num_workers=2)
 
 testset = torchvision.datasets.ImageFolder(root= test_data_dir, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=4,
+testloader = torch.utils.data.DataLoader(testset, batch_size=32,
                                          shuffle=False, num_workers=2)
 
 ########################################################################
