@@ -214,13 +214,13 @@ criterion = nn.CrossEntropyLoss()   #loss function
 
 from classifiers import Net1, Net2, Net3, Net4
 
-models = [Net1(), Net2(), Net3(), Net4()]
+models = [Net4()]
 optimizers = [optim.SGD(p.parameters(),lr=learning_rate,momentum=0.9, weight_decay=5e-4) for p in models]
 
 for i in range(len(models)):
     net = models[i]
     optimizer = optimizers[i]
-
+    i=3
     model_name = 'Net' + str(i+1)
     print( 'On %s' %(model_name) )
 

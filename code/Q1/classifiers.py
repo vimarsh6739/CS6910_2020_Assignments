@@ -127,27 +127,33 @@ class Net4(nn.Module):
     def __init__(self):
         super(Net4,self).__init__()
 
-        self.conv1 = nn.Conv2d(3,64,3,1,1)
-        self.conv2 = nn.Conv2d(64,128,3,1,1)
+        self.conv1 = nn.Conv2d(3,16,3,1,1)
+        self.conv2 = nn.Conv2d(16,32,3,1,1)
 
         self.conv_block3 = nn.Sequential(
-            nn.Conv2d(128,256,3,1,1),
+            nn.Conv2d(32,64,3,1,1),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.Conv2d(256,256,3,1,1),
+            nn.Conv2d(64,64,3,1,1),
+            nn.BatchNorm2d(64),
             nn.ReLU()
         )
 
         self.conv_block4 = nn.Sequential(
-            nn.Conv2d(256,512,3,1,1),
+            nn.Conv2d(64,128,3,1,1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.Conv2d(512,512,3,1,1),
+            nn.Conv2d(128,128,3,1,1),
+            nn.BatchNorm2d(128),
             nn.ReLU()
         )
 
         self.conv_block5 = nn.Sequential(
-            nn.Conv2d(512,512,3,1,1),
+            nn.Conv2d(128,256,3,1,1),
+            nn.BatchNorm2d(256),
             nn.ReLU(),
-            nn.Conv2d(512,512,3,1,1),
+            nn.Conv2d(256,256,3,1,1),
+            nn.BatchNorm2d(256),
             nn.ReLU()
         )
 
@@ -155,12 +161,12 @@ class Net4(nn.Module):
         
         self.linear_block = nn.Sequential(
             nn.Dropout(),
-            nn.Linear(2*2*512, 512),
+            nn.Linear(2*2*256, 512),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(512, 128),
             nn.ReLU(),
-            nn.Linear(128, 5)
+            nn.Linear(128,5)
         )
 
 
