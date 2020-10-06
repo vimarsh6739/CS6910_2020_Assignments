@@ -187,7 +187,8 @@ def trainModel(model_name, net, num_epochs, optimizer, criterion):
         # Checkpoint model every 10 epochs
         if ((epoch + 1) % 10 == 0) :
             model_path = '../models/'+str(model_name)+'_'+str(epoch+1)+'.pth'
-            torch.save(net.state_dict(), model_path)
+            torch.save({'epoch':epoch,
+                        'model_state_dict':net.state_dict() }, model_path)
     
     # Plot and save loss curve and accuracy curve
 
@@ -204,31 +205,29 @@ def trainModel(model_name, net, num_epochs, optimizer, criterion):
 os.makedirs('../models', exist_ok=True)
 os.makedirs('../images', exist_ok=True)
 
-num_epochs = 50                     # desired number of training epochs.
+num_epochs = 1                     # desired number of training epochs.
 learning_rate = 0.001               #desired learning rate
 criterion = nn.CrossEntropyLoss()   #loss function
 
 ########################################################################
-# Import and run models
+# Import and run all neural nets
 
-from classifiers import Net1, Net2
+from classifiers import Net1, Net2, Net3, Net4
 
-net1 = Net1()
-# transfer the model to GPU
-if torch.cuda.is_available():
-    net1 = net1.cuda()
+models = [Net1(), Net2(), Net3(), Net4()]
+optimizers = [optim.SGD(p.parameters(),lr=learning_rate,momentum=0.9, weight_decay=5e-4) for p in models]
 
-optimizer1 = optim.SGD(net1.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
-num_params = np.sum([p.nelement() for p in net1.parameters()])
-print(num_params, ' parameters')
-#trainModel("Net1", net1, num_epochs, optimizer1, criterion)
+for i in range(len(models)):
+    net = models[i]
+    optimizer = optimizers[i]
 
-net2 = Net2()
-# transfer the model to GPU
-if torch.cuda.is_available():
-    net2 = net2.cuda()
+    model_name = 'Net' + str(i+1)
+    print( 'On %s' %(model_name) )
 
-optimizer2 = optim.SGD(net2.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
-num_params = np.sum([p.nelement() for p in net2.parameters()])
-print(num_params, ' parameters')
-trainModel("Net2", net2, num_epochs, optimizer2, criterion)
+    num_params = np.sum([p.nelement() for p in net.parameters()])
+    print(num_params, ' parameters')
+    
+    if torch.cuda.is_available():
+        net = net.cuda()
+    
+    trainModel(model_name, net, num_epochs, optimizer, criterion)
