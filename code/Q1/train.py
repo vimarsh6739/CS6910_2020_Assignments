@@ -185,7 +185,7 @@ def trainModel(model_name, net, num_epochs, optimizer, criterion):
 
         
         # Checkpoint model every 10 epochs
-        if ((epoch + 1) % 10 == 0) :
+        if ((epoch + 1) % 5 == 0) :
             model_path = '../models/'+str(model_name)+'_'+str(epoch+1)+'.pth'
             torch.save({'epoch':epoch,
                         'model_state_dict':net.state_dict() }, model_path)
@@ -205,7 +205,7 @@ def trainModel(model_name, net, num_epochs, optimizer, criterion):
 os.makedirs('../models', exist_ok=True)
 os.makedirs('../images', exist_ok=True)
 
-num_epochs = 1                     # desired number of training epochs.
+num_epochs = 50                     # desired number of training epochs.
 learning_rate = 0.001               #desired learning rate
 criterion = nn.CrossEntropyLoss()   #loss function
 
