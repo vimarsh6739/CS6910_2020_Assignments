@@ -214,20 +214,33 @@ criterion = nn.CrossEntropyLoss()   #loss function
 
 from classifiers import Net1, Net2, Net3, Net4
 
-models = [Net4()]
-optimizers = [optim.SGD(p.parameters(),lr=learning_rate,momentum=0.9, weight_decay=5e-4) for p in models]
+# models = [Net1(), Net2(), Net3(), Net4()]
+# optimizers = [optim.SGD(p.parameters(),lr=learning_rate,momentum=0.9, weight_decay=5e-4) for p in models]
 
-for i in range(len(models)):
-    net = models[i]
-    optimizer = optimizers[i]
-    i=3
-    model_name = 'Net' + str(i+1)
-    print( 'On %s' %(model_name) )
+# for i in range(len(models)):
+#     net = models[i]
+#     optimizer = optimizers[i]
 
-    num_params = np.sum([p.nelement() for p in net.parameters()])
-    print(num_params, ' parameters')
+#     model_name = 'Net' + str(i+1)
+    # print( 'On %s' %(model_name) )
+
+    # num_params = np.sum([p.nelement() for p in net.parameters()])
+    # print(num_params, ' parameters')
     
-    if torch.cuda.is_available():
-        net = net.cuda()
+    # if torch.cuda.is_available():
+    #     net = net.cuda()
     
-    trainModel(model_name, net, num_epochs, optimizer, criterion)
+    # trainModel(model_name, net, num_epochs, optimizer, criterion)
+
+net = Net4()
+optimizer = optim.SGD(net.parameters(),lr = learning_rate, momentum=0.9, weight_decay=5e-4)
+model_name = "Net4"
+print( 'On %s' %(model_name) )
+
+num_params = np.sum([p.nelement() for p in net.parameters()])
+print(num_params, ' parameters')
+    
+if torch.cuda.is_available():
+    net = net.cuda()
+    
+trainModel(model_name, net, num_epochs, optimizer, criterion)
