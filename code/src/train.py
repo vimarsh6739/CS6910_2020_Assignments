@@ -174,16 +174,17 @@ def trainModel(model_name, net, num_epochs, optimizer, criterion):
     for epoch in range(num_epochs):  # loop over the dataset multiple times
         print('epoch ', epoch + 1)
         epoch_train_loss, epoch_train_acc = train(epoch, trainloader, net, optimizer, criterion)
+        net.eval()
         epoch_val_loss, epoch_val_acc = test(valloader, net, criterion)
         classwise_test(valloader, net)
-
+        
         train_loss.append(epoch_train_loss)
         train_acc.append(epoch_train_acc)
 
         val_loss.append(epoch_val_loss)
         val_acc.append(epoch_val_acc)
 
-        
+        net.train()
         # Checkpoint model every 10 epochs
         if ((epoch + 1) % 5 == 0) :
             model_path = '../models/'+str(model_name)+'_'+str(epoch+1)+'.pth'
@@ -233,6 +234,7 @@ from classifiers import Net1, Net2, Net3, Net4
     # trainModel(model_name, net, num_epochs, optimizer, criterion)
 
 net = Net4()
+print(net)
 optimizer = optim.SGD(net.parameters(),lr = learning_rate, momentum=0.9, weight_decay=5e-4)
 model_name = "Net4"
 print( 'On %s' %(model_name) )

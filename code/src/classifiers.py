@@ -160,10 +160,8 @@ class Net4(nn.Module):
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         
         self.linear_block = nn.Sequential(
-            nn.Dropout(),
             nn.Linear(2*2*256, 512),
             nn.ReLU(),
-            nn.Dropout(0.2),
             nn.Linear(512, 128),
             nn.ReLU(),
             nn.Linear(128,5)
