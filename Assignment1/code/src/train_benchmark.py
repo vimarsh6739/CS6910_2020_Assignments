@@ -84,19 +84,8 @@ for m in model_list:
         v_loss, v_acc = test(valloader,net, criterion)
         t_loss, t_acc = test(testloader,net,criterion)
         print("%15s %15s %15s %15s" %(m.split('_')[0], str(epoch), str(v_acc), str(t_acc)))
-#m = 'Net4_10.pth'
-#model_path = '../models/Net4_10.pth'
 
-#checkpoint = torch.load(f=model_path)
-#epoch = checkpoint['epoch'] + 1
-#net = Net4()
-#if torch.cuda.is_available():
-#    net = net.cuda()
-#net.load_state_dict(checkpoint['model_state_dict'])
-#net.eval()
-#v_loss, v_acc = test(valloader,net, criterion)
-#t_loss, t_acc = test(testloader,net,criterion)
-#print("%15s %15s %15s %15s" %(m.split('_')[0], str(epoch), str(v_acc), str(t_acc)))
+
 
 
 
