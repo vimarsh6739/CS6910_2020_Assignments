@@ -1,0 +1,98 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lachaise Assignment
+% LaTeX Template
+% Version 1.0 (26/6/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Marion Lachaise & François Févotte
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{CS6910: Programming Assignment 2} % Title of the assignment
+
+\author{Vimarsh Sathia\\ \texttt{CS17B046}} % Author name and email address
+
+\date{Indian Institute of Technology Madras --- \today} % University, school and/or department name(s) and a date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+\section*{General Information}
+This report only provides metrics about part A of Assignment $2$. Part B is on a seperate scanned pdf file(since it's handwritten).
+\section*{Part-A}
+Net $4$ from the previous assignment was chosen as the model for the regularization experiment. For all the different experiments, the learning rate was fixed at $0.001$. Cross entropy loss was considered as the loss function. Each model was trained for $25$ epochs, with a batch size of $32$.\\
+The loss curves are visualized in figures \cref{fig:decay1} to \cref{fig:decay5}.
+\begin{table}[ht]
+	\caption{Accuracy and loss with different decay values}% title of Table
+	\centering % used for centering table
+	\begin{tabular}{|c | c | c | c|}% centered columns (4 columns)
+		\hline\hline      
+		Weight decay & Train loss & Train accuracy(\%) & Test accuracy(\%) \\ [0.5ex]
+		\hline  
+         0.0005 &   0.00585011 &             99.856 &              79.72 \\
+         0.005  &   0.00322493 &            100     &              82.32 \\
+         0.05   &   0.400755   &             87.14  &              80.44 \\
+		 0.1    &   0.750709   &             70.688 &              70.24 \\
+	     0.2 &      1.4262     &             37.204 &              37.12 \\ [1ex]
+		\hline
+	\end{tabular}
+	\label{table:test-acc}% is used to refer this table in the text
+\end{table}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.3]{../code/images/decay0.0005.png}
+	\caption{Loss and accuracy curves for weight decay of 5e-4}
+	\label{fig:decay1}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{../code/images/decay0.005.png}
+	\caption{Loss and accuracy curves for weight decay of 5e-3}
+	\label{fig:decay2}
+\end{figure}\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{../code/images/decay0.05.png}
+	\caption{Loss and accuracy curves for weight decay of 0.05}
+	\label{fig:decay3}
+\end{figure}\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{../code/images/decay0.1.png}
+	\caption{Loss and accuracy curves for weight decay of 0.1}
+	\label{fig:decay4}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{../code/images/decay0.0005.png}
+	\caption{Loss and accuracy curves for weight decay of 0.2}
+	\label{fig:decay5}
+\end{figure}
+
+\subsection*{Inferences}
+From the loss curves, it is easy to see that the model overfits the dataset when the decay is $5e-4$ and $5e-3$. Best performance(w.r.t) loss history is seen for weight\_decay = $0.05$. Beyond this value, the model begins underfitting the dataset(due to high bias).
+\end{document}
