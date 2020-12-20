@@ -7,31 +7,48 @@ import os, sys
 import pickle
 from word2vec_models import CBOW, Skipgram
 
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def make_context_vector(context, word_to_ix):
     idx = [word_to_ix[w] for w in context]
-    return torch.tensor(idx, dtype = torch.long)
+    return idx
 
-def train_epoch(trainloader, net, optimizer, criterion):
+def get_batches(train_data, batch_size, word_to_ix):
+    n_batches = int(len(train_data) / batch_size)
+    train_data = train_data[:(n_batches*batch_size)]
+
+    for idx in range(0,len(train_data),batch_size):
+        x,y = [], []
+        batch = train_data[idx:idx+batch_size]
+        for ii in range(len(batch)):
+            batch_x = make_context_vector(batch[ii][0],word_to_ix)
+            batch_y = make_context_vector(batch[ii][1],word_to_ix)
+            x.append(batch_x)
+            y.append(batch_y)
+        x = torch.tensor(x,dtype=torch.long)
+        y = torch.tensor(y,dtype=torch.long)
+        yield x,y
+
+def train_epoch(train_data, net, optimizer, criterion, word_to_ix):
     running_loss = 0.0
-    for i, data in enumerate(tqdm(trainloader)):
-        context, target = data
-        context.to(device)
-        target.to(device)
+    for context, target in tqdm(get_batches(train_data, 512, word_to_ix),total=int(len(train_data)/512)):
+
+        context = context.to(device)
+        target = target.to(device)
         
         #set gradients to 0
         optimizer.zero_grad()
         
         #find loss
         outputs = net(context)
-        loss = criterion(outputs, target)
+        
+        loss = criterion(outputs, torch.flatten(target))
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
     return running_loss
-    
-    
+
 #Specify arguments for training
 parser = argparse.ArgumentParser()
 parser.add_argument("-m","--model", type=str, choices=['cbow', 'skipgram'], 
@@ -53,6 +70,7 @@ with open('../data/ix_to_word.pickle', 'rb') as handle:
     ix_to_word = pickle.load(handle)
 vocab_size = len(word_to_ix)
 
+
 # Specify model name for word2vec
 model_name = args.model + '_d' + str(args.embedding_dim) + '_cs_'+str(args.context_size)
 
@@ -71,17 +89,16 @@ if args.model == 'cbow':
         context = [corpus[i-j] for j in range(1,args.context_size+1)]
         context.extend([corpus[i+j] for j in range(1,args.context_size+1)])
         target = [corpus[i]]
-        train_data.append((make_context_vector(context,word_to_ix),
-                           make_context_vector(target,word_to_ix)))
-    print(train_data[:5])
-    trainloader = torch.utils.data.DataLoader(train_data, shuffle=True, num_workers=2, batch_size=512)
+        train_data.append((context,target))
+    print(len(train_data))
+    #trainloader = torch.utils.data.DataLoader(train_data, shuffle=True, num_workers=2, batch_size=512)
 
     print('Starting Training')
     for epoch in range(args.epochs):
         
-        epoch_loss = train_epoch(trainloader, net, optimizer, criterion)
+        epoch_loss = train_epoch(train_data, net, optimizer, criterion, word_to_ix)
         print('epoch: %d loss: %.4f'%(epoch+1,epoch_loss))
-        
+
         #Checkpoint model every epoch
         model_path = '../models/'+str(model_name)+'_'+str(epoch+1)+'.pth'
         torch.save({'epoch':epoch+1,
@@ -103,15 +120,14 @@ else:
         target = [corpus[i-j] for j in range(1,args.context_size+1)]
         target.extend([corpus[i+j] for j in range(1,args.context_size+1)])
         context = [corpus[i]]
-        train_data.append((make_context_vector(context,word_to_ix),
-                           make_context_vector(target,word_to_ix)))
-    print(train_data[:5])
-    trainloader = torch.utils.data.DataLoader(train_data, shuffle=True, num_workers=2, batch_size=512)
+        train_data.append((context,target))
+   #print(train_data[:5])
+    #trainloader = torch.utils.data.DataLoader(train_data, shuffle=True, num_workers=2, batch_size=512)
 
     print('Starting Training')
     for epoch in range(args.epochs):
         
-        epoch_loss = train_epoch(trainloader, net, optimizer, criterion)
+        epoch_loss = train_epoch(train_data, net, optimizer, criterion, word_to_ix)
         print('epoch: %d loss: %.4f'%(epoch+1,epoch_loss))
         
         model_path = '../models/'+str(model_name)+'_'+str(epoch+1)+'.pth'
