@@ -30,9 +30,9 @@ def get_batches(train_data, batch_size, word_to_ix):
         y = torch.tensor(y,dtype=torch.long)
         yield x,y
 
-def train_epoch(train_data, net, optimizer, criterion, word_to_ix):
+def train_cbow(train_data, net, optimizer, criterion, word_to_ix, batch_size):
     running_loss = 0.0
-    for context, target in tqdm(get_batches(train_data, 512, word_to_ix),total=int(len(train_data)/512)):
+    for context, target in tqdm(get_batches(train_data, batch_size, word_to_ix),total=int(len(train_data)/batch_size)):
 
         context = context.to(device)
         target = target.to(device)
@@ -57,6 +57,8 @@ parser.add_argument("-d","--embedding-dim",type=int, default=100,
                     help='Specify dimension of embedding. Defaults to 100')
 parser.add_argument("-cs","--context-size",type=int, default=2, 
                     help='Specify size of context window. Defaults to 2')
+parser.add_argument("-bs","--batch-size",type=int, default=512,
+                    help='Specify batch size for training. Defaults to 512')
 parser.add_argument("-e","--epochs",type=int,default=5, 
                     help='No of epochs to train. Defaults to 5')
 args = parser.parse_args()
@@ -96,7 +98,7 @@ if args.model == 'cbow':
     print('Starting Training')
     for epoch in range(args.epochs):
         
-        epoch_loss = train_epoch(train_data, net, optimizer, criterion, word_to_ix)
+        epoch_loss = train_cbow(train_data, net, optimizer, criterion, word_to_ix, args.batch_size)
         print('epoch: %d loss: %.4f'%(epoch+1,epoch_loss))
 
         #Checkpoint model every epoch
@@ -115,19 +117,40 @@ else:
 
     print('Creating context-target pairs')
     # Create (context, target) pairs and save in trainloader
+    # Since target is multi-valued in this case, split it into single targets
+    # for training purpose 
     train_data = []
-    for i in tqdm(range(args.context_size,len(corpus) - args.context_size)):
-        target = [corpus[i-j] for j in range(1,args.context_size+1)]
-        target.extend([corpus[i+j] for j in range(1,args.context_size+1)])
-        context = [corpus[i]]
-        train_data.append((context,target))
-   #print(train_data[:5])
-    #trainloader = torch.utils.data.DataLoader(train_data, shuffle=True, num_workers=2, batch_size=512)
+    for i in tqdm(range(args.context_size,len(corpus)-args.context_size)):
+        context = word_to_ix[corpus[i]]
+        for j in range(1, args.context_size+1):
+            target = word_to_ix[corpus[i-j]]
+            train_data.append((context,target))
+            target = word_to_ix[corpus[i+j]]
+            train_data.append((context,target))
+
+    train_data = torch.tensor(train_data,dtype=torch.long)
+    trainloader = torch.utils.data.DataLoader(train_data,num_workers=2,
+                                                batch_size=args.batch_size,
+                                                shuffle=True,
+                                                drop_last=True)
 
     print('Starting Training')
     for epoch in range(args.epochs):
+        epoch_loss = 0.0
+        for data in tqdm(trainloader):
+            inp = data[:,0][:,None]
+            tar = data[:,1]
+            inp, tar = inp.to(device), tar.to(device)
+
+            optimizer.zero_grad()
         
-        epoch_loss = train_epoch(train_data, net, optimizer, criterion, word_to_ix)
+            #find loss
+            outputs = net(inp)
+            loss = criterion(outputs, tar)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+
         print('epoch: %d loss: %.4f'%(epoch+1,epoch_loss))
         
         model_path = '../models/'+str(model_name)+'_'+str(epoch+1)+'.pth'

@@ -36,16 +36,15 @@ class Skipgram(nn.Module):
         self.context_size = context_size
 
         self.embeddings = nn.Embedding(vocab_size, embedding_dim)
-        self.fc1 = nn.Linear(embedding_dim, 128)
-        self.fc2 = nn.Linear(128, context_size * vocab_size)
+        self.fc1 = nn.Linear(embedding_dim, 200)
+        self.fc2 = nn.Linear(200, vocab_size)
 
     def forward(self, x):
+        
         embed = self.embeddings(x)
-        #embed = embed.view(embed.shape[0], -1)
-
+        embed = embed.view(embed.shape[0], -1)
         out = F.relu(self.fc1(embed))
         out = self.fc2(out)
-        out = out.view(out.shape[0], self.context_size, -1)
         return out
 
     def ix_to_embedding(self, ix):

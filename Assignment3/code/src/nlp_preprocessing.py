@@ -38,7 +38,7 @@ ix_to_word = {i: word for i, word in enumerate(unique_words)}
 
 import pickle
 import os, sys
-os.makedirs('../data/',existok=True)
+os.makedirs('../data/',exist_ok=True)
 
 # Save cleaned words
 with open('../data/cleaned_words.pickle', 'wb') as handle:
