@@ -27,7 +27,7 @@
 %	ASSIGNMENT INFORMATION
 %----------------------------------------------------------------------------------------
 
-\title{CS6910: Programming Assignment 3} % Title of the assignment
+\title{CS6910: Programming Assignment 3 Report} % Title of the assignment
 
 \author{Vimarsh Sathia\\ \texttt{CS17B046}} % Author name and email address
 
@@ -42,8 +42,93 @@
 %----------------------------------------------------------------------------------------
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
-\section*{General Information}
+\section{Part-A: Word2Vec embeddings} \label{parta}
+For the text8 dataset, embeddings were trained using the Continuous Bag of Words and the Skipgram training technique. 4 embeddings with the following details were trained, (also attached in the submission).
+\begin{enumerate}
+    \item Continuous Bag of Words(CBOW)
+        \begin{enumerate}
+            \item $100$ dimensions, context size $4$, $5$ epochs
+            \item $200$ dimensions, context size $4$, $5$ epochs
+        \end{enumerate}
+    \item Skipgram
+    \begin{enumerate}
+        \item $100$ dimensions, context size $4$, $5$ epochs
+        \item $200$ dimensions, context size $4$, $5$ epochs
+    \end{enumerate}
+\end{enumerate}
+In both training methods, the target word was in the middle of the context words.
+\section{Part-B: Sentiment Analysis}
+In this part, sentiment analysis on the Rotten Tomatoes dataset was carried out using pre-trained GloVe embeddings and the custom embeddings trained in section \cref{parta} . The following GloVe embeddings were considered:
+\begin{enumerate}
+    \item GloVe $6B$ tokens, $50$ dimensions
+    \item GloVe $6B$ tokens, $100$ dimensions
+    \item GloVe $6B$ tokens, $200$ dimensions
+\end{enumerate}
+\cref{table:testacc} summarizes the test accuracy achieved for each word embedding. Each LSTM model was trained for $10$ epochs in this setup.
 
+\begin{table}[ht]
+	\caption{Accuracy stats for every embedding after 10 epochs }% title of Table
+	\centering % used for centering table
+	\begin{tabular}{|c | c | c | c|}% centered columns (4 columns)
+		\hline\hline      
+		Embedding & Dimensions & Train accuracy(\%) & Test accuracy(\%) \\ [0.5ex]
+		\hline  
+         GloVe  &   50    &             63.461 &              63.108 \\
+                &   100   &             65.250 &              64.770 \\
+                &   \textbf{200}   &             \textbf{65.757} &              \textbf{65.073} \\
+        \hline
+         CBOW   &   100   &             60.363 &             59.533 \\
+                &   200   &             64.166 &             62.822 \\
+        \hline
+         Skipgram   &   100   &         60.275 &             59.016 \\
+	                &   200   &         64.084 &             61.190 \\ [1ex]
+		\hline
+	\end{tabular}
+	\label{table:testacc}% is used to refer this table in the text
+\end{table}
+From \cref{table:testacc}, we can see that maximum accuracy is achieved for the GloVe word embedding with $200$ dimensions. However, since all accuracies are almost the same, we analyze classwise classification accuracy by viewing the confusion matrix for all different embeddings.
 
-
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/GloVe50.png}
+    \caption{Confusion matrix for GloVe embedding with 50 dimensions}
+    \label{fig:g50}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/GloVe100.png}
+    \caption{Confusion matrix for GloVe embedding with 100 dimensions}
+    \label{fig:g100}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/GloVe200.png}
+    \caption{Confusion matrix for GloVe embedding with 200 dimensions}
+    \label{fig:g200}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/CBow100.png}
+    \caption{Confusion matrix for CBOW embedding with 100 dimensions}
+    \label{fig:c100}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/CBow200.png}
+    \caption{Confusion matrix for CBOW embedding with 200 dimensions}
+    \label{fig:c200}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/SkipGram100.png}
+    \caption{Confusion matrix for Skipgram embedding with 100 dimensions}
+    \label{fig:s100}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.4]{../code/images/SkipGram200.png}
+    \caption{Confusion matrix for Skipgram embedding with 200 dimensions}
+    \label{fig:s200}
+\end{figure}
+After analyzing the figures, we see that the Glove embeddings produce balanced output for all classes, compared to the CBOW and Skipgram embeddings. \cref{fig:g50} to \cref{fig:s200} show plots of the confusion matrices of every LSTM model with the appropriate embedding. 
 \end{document}
