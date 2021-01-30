@@ -1,0 +1,6 @@
+[submodule "Project/SCNet"]
+	path = Project/SCNet
+	url = https://github.com/MCG-NKU/SCNet
+[submodule "Project/grad_cam_pytorch"]
+	path = Project/grad_cam_pytorch
+	url = https://github.com/tanjimin/grad-cam-pytorch-light.git
