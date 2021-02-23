@@ -5,7 +5,7 @@ Imagenette and Imagewoof datasets, which can be accessed [here](https://github.c
 We try to compare the performance of pretrained **SCNet-50** and **SCNet-101** with that of pretrained **ResNet-50** and **ResNet-101** by adapting the models for the Imagenette and Imagewoof datasets 
 using transfer learning. For a given set of fixed images, we also try to visualize the attention maps for each network using **Grad-CAM**. 
 
-- [Report](https://github.com/vimarsh6739/CS6910_2020_Assignments/tree/main/Project)
+- [Report](https://drive.google.com/file/d/1Pv_nyRLJeCZX7Nw1sHr_cTm2SwabeJjP/view?usp=sharing)
 - [Trained Models](https://drive.google.com/drive/folders/1GCazJEuNHWF0kwyAGZ5qV3WFPfoHH9xU?usp=sharing)
 
 ## Contents
